@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-run:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, dev]   # 👈 dono labels daalne hain
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
