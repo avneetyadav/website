@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-run:
-    runs-on: [self-hosted, dev]   # Must match runner's label
+    runs-on: [self-hosted, dev]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
