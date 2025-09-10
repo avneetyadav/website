@@ -1,4 +1,4 @@
-name: Deploy on Dev Runner
+name: Deploy
 
 on:
   push:
@@ -7,22 +7,18 @@ on:
 
 jobs:
   build-and-run:
-    runs-on: [self-hosted, dev]   # 👈 dono labels daalne hain
+    runs-on: [self-hosted, dev]   # 👈 yaha sirf 'dev' mat likh
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Build Docker image
         run: |
-          docker build -t myapp:${{ github.sha }} .
+          docker build -t myapp:$GITHUB_SHA .
 
-      - name: Stop old containers (if any)
+      - name: Run container on random 4-digit port
         run: |
-          docker ps -q --filter "ancestor=myapp:${{ github.sha }}" | xargs -r docker stop
-
-      - name: Run Docker container on random port
-        run: |
-          PORT=$(( ( RANDOM % 7000 )  + 3000 ))
-          echo "App running on port: $PORT"
-          docker run -d -p $PORT:80 myapp:${{ github.sha }}
+          PORT=$(( ( RANDOM % 9000 )  + 1000 ))
+          echo "App running on port $PORT"
+          docker run -d -p $PORT:80 myapp:$GITHUB_SHA
 
