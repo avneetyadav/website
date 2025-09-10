@@ -7,28 +7,28 @@ on:
 
 jobs:
   build-and-run:
-    runs-on: [self-hosted, dev]   # 👈 yaha wahi label lagana jo tu config me diya tha
+    runs-on: [self-hosted, dev]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Cleanup old containers
-        run: docker rm -f $(docker ps -aq) || true
+        run: sudo docker rm -f $(sudo docker ps -aq) || true
 
       - name: Build Docker image
         run: |
           IMAGE_NAME=mywebsite:${GITHUB_SHA}
           echo "Building image $IMAGE_NAME"
-          docker build -t $IMAGE_NAME .
+          sudo docker build -t $IMAGE_NAME .
 
       - name: Run Docker container on random port
         run: |
-          PORT=$((1000 + RANDOM % 9000))   # Random 4-digit port
+          PORT=$((1000 + RANDOM % 9000))
           echo "🔹 Running on port: $PORT"
           echo "PORT=$PORT" >> $GITHUB_ENV
-          docker run -d -p $PORT:80 --name website_${GITHUB_SHA} mywebsite:${GITHUB_SHA}
+          sudo docker run -d -p $PORT:80 --name website_${GITHUB_SHA} mywebsite:${GITHUB_SHA}
 
       - name: Show running containers
-        run: docker ps -a
+        run: sudo docker ps -a
 
