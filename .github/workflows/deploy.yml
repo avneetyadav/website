@@ -1,0 +1,35 @@
+name: Build and Test Website
+
+on:
+  push:
+    branches:
+      - main   # jab bhi main branch pe push hoga
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t my-website .
+
+      - name: Run Docker container on random 4-digit port
+        run: |
+          # Generate random 4-digit port
+          PORT=$(( ( RANDOM % 9000 ) + 1000 ))
+
+          echo "🚀 Running container on port $PORT"
+          docker run -d -p $PORT:80 --name my-website-$PORT my-website
+
+          # Save port for next steps
+          echo "PORT=$PORT" >> $GITHUB_ENV
+
+      - name: Show running containers
+        run: docker ps
+
+      - name: Show assigned port
+        run: echo "🌍 Website is running on port $PORT (inside GitHub runner)"
+
