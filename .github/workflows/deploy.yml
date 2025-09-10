@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-run:
-    runs-on: [self-hosted, dev]
+    runs-on: [self-hosted, dev]   # Must match runner's label
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -15,6 +15,10 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t myapp:${{ github.sha }} .
+
+      - name: Stop old containers (if any)
+        run: |
+          docker ps -q --filter "ancestor=myapp:${{ github.sha }}" | xargs -r docker stop
 
       - name: Run Docker container on random port
         run: |
